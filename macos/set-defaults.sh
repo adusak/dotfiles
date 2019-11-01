@@ -55,7 +55,7 @@ defaults write com.apple.screensaver askForPassword -int 1
 defaults write com.apple.screensaver askForPasswordDelay -int 0
 
 echo "  › Always show scrollbars"
-defaults write NSGlobalDomain AppleShowScrollBars -string "Always"
+defaults write NSGlobalDomain AppleShowScrollBars -string "Automatic"
 # Possible values: `WhenScrolling`, `Automatic` and `Always`
 
 echo "  › Disable Dashboard"
@@ -121,7 +121,7 @@ echo "  › Expand save panel by default"
 defaults write NSGlobalDomain NSNavPanelExpandedStateForSaveMode -bool true
 
 echo "  › Set sidebar icon size to small"
-defaults write NSGlobalDomain NSTableViewDefaultSizeMode -int 1
+defaults write NSGlobalDomain NSTableViewDefaultSizeMode -int 2
 
 echo "  › Show status bar"
 defaults write com.apple.finder ShowStatusBar -bool true
@@ -133,7 +133,7 @@ echo "  › Disable the warning before emptying the Trash"
 defaults write com.apple.finder WarnOnEmptyTrash -bool false
 
 echo "  › Save to disk by default, instead of iCloud"
-defaults write NSGlobalDomain NSDocumentSaveNewDocumentsToCloud -bool false
+defaults write NSGlobalDomain NSDocumentSaveNewDocumentsToCloud -bool true
 
 echo "  › Display full POSIX path as Finder window title"
 defaults write com.apple.finder _FXShowPosixPathInTitle -bool true
@@ -186,41 +186,6 @@ defaults write com.apple.dock autohide -bool true
 
 echo "  › Don't animate opening applications from the Dock"
 defaults write com.apple.dock launchanim -bool false
-
-#############################
-
-echo ""
-echo "› Transmission:"
-echo "  › Use ~/Downloads/Incomplete to store incomplete downloads"
-defaults write org.m0k.transmission UseIncompleteDownloadFolder -bool true
-defaults write org.m0k.transmission IncompleteDownloadFolder -string "$HOME/Downloads/Incomplete"
-
-echo "  › Don't prompt for confirmation before downloading"
-defaults write org.m0k.transmission DownloadAsk -bool false
-
-echo "  › Trash original torrent files"
-defaults write org.m0k.transmission DeleteOriginalTorrent -bool true
-
-echo "  › Hide the donate message"
-defaults write org.m0k.transmission WarningDonate -bool false
-
-echo "  › Hide the legal disclaimer"
-defaults write org.m0k.transmission WarningLegal -bool false
-
-echo "  › Auto-add .torrent files in ~/Downloads"
-defaults write org.m0k.transmission AutoImportDirectory -string "$HOME/Downloads"
-
-echo "  › Auto-resize the window to fit transfers"
-defaults write org.m0k.transmission AutoSize -bool true
-
-echo "  › Auto update to betas"
-defaults write org.m0k.transmission AutoUpdateBeta -bool true
-
-echo "  › Set up the best block list"
-defaults write org.m0k.transmission EncryptionRequire -bool true
-defaults write org.m0k.transmission BlocklistAutoUpdate -bool true
-defaults write org.m0k.transmission BlocklistNew -bool true
-defaults write org.m0k.transmission BlocklistURL -string "http://john.bitsurge.net/public/biglist.p2p.gz"
 
 #############################
 
@@ -284,15 +249,6 @@ fi
 
 #############################
 
-echo ""
-echo "› Media:"
-if [ -z "$KEEP_ITUNES" ]; then
-	echo "  › Disable iTunes helper"
-	disable_agent /Applications/iTunes.app/Contents/MacOS/iTunesHelper.app
-	echo "  › Prevent play button from launching iTunes"
-	unload_agent /System/Library/LaunchAgents/com.apple.rcd.plist
-fi
-
 echo "  › Disable Spotify web helper"
 disable_agent ~/Applications/Spotify.app/Contents/MacOS/SpotifyWebHelper
 
@@ -301,8 +257,8 @@ disable_agent ~/Applications/Spotify.app/Contents/MacOS/SpotifyWebHelper
 echo ""
 echo "› Kill related apps"
 for app in "Activity Monitor" "Address Book" "Calendar" "Contacts" "cfprefsd" \
-	"Dock" "Finder" "Mail" "Messages" "Safari" "SystemUIServer" \
-	"Terminal" "Transmission" "Photos"; do
+	"Dock" "Finder" "Messages" "Safari" "SystemUIServer" \
+	"Terminal" "Photos"; do
 	killall "$app" >/dev/null 2>&1
 done
 set -e
