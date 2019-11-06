@@ -3,11 +3,15 @@ caarlos0/zsh-git-fetch-merge kind:path
 caarlos0/zsh-git-sync kind:path
 caarlos0/zsh-mkc
 caarlos0/zsh-open-pr kind:path
-rupa/z
 zsh-users/zsh-completions
 zsh-users/zsh-autosuggestions
-robbyrussell/oh-my-zsh path:plugins/osx/osx.plugin.zsh
-robbyrussell/oh-my-zsh path:plugins/brew/brew.plugin.zsh
+robbyrussell/oh-my-zsh
+robbyrussell/oh-my-zsh path:plugins/osx
+robbyrussell/oh-my-zsh path:plugins/z
+robbyrussell/oh-my-zsh path:plugins/adb
+robbyrussell/oh-my-zsh path:plugins/rbenv
+robbyrussell/oh-my-zsh path:plugins/code
+
 
 # these should be at last!
 denysdovhan/spaceship-prompt

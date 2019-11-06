@@ -1,6 +1,7 @@
 #!/bin/zsh
 # uncomment this and the last line for zprof info
 # zmodload zsh/zprof
+export ZSH="$(antibody home)/https-COLON--SLASH--SLASH-github.com-SLASH-robbyrussell-SLASH-oh-my-zsh"
 
 # shortcut to this dotfiles path is $DOTFILES
 export DOTFILES="$HOME/.dotfiles"
