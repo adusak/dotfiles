@@ -3,12 +3,14 @@ caarlos0/zsh-git-fetch-merge kind:path
 caarlos0/zsh-git-sync kind:path
 caarlos0/zsh-mkc
 caarlos0/zsh-open-pr kind:path
-mafredri/zsh-async
 rupa/z
 zsh-users/zsh-completions
 zsh-users/zsh-autosuggestions
+robbyrussell/oh-my-zsh path:plugins/osx/osx.plugin.zsh
+robbyrussell/oh-my-zsh path:plugins/brew/brew.plugin.zsh
 
 # these should be at last!
 denysdovhan/spaceship-prompt
 zdharma/fast-syntax-highlighting
 zsh-users/zsh-history-substring-search
+
