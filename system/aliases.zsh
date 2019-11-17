@@ -1,18 +1,10 @@
 #!/bin/sh
-if [ "$(uname -s)" = "Darwin" ]; then
-	alias ls="ls -FG"
-else
-	alias ls="ls -F --color"
-fi
-alias l="ls -lAh"
-alias la="ls -A"
-alias ll="ls -l"
-
 alias grep="grep --color=auto"
 alias duf="du -sh * | sort -hr"
 alias less="less -r"
 
 alias cat="ccat"
+alias cpwd="pwd | pbcopy"
 
 alias croot='cd "$(git rev-parse --show-toplevel)"'
 
@@ -34,3 +26,17 @@ if [ "$(uname -s)" != "Darwin" ]; then
 		alias open="xdg-open"
 	fi
 fi
+
+
+## EXA aliases
+# general use
+alias ls='exa'                                                         # ls
+alias l='exa -lbF --git'                                               # list, size, type, git
+alias ll='exa -lbGF --git'                                             # long list
+alias llm='exa -lbGF --git --sort=modified'                            # long list, modified date sort
+alias la='exa -lbhHigUmuSa --time-style=long-iso --git --color-scale'  # all list
+alias lx='exa -lbhHigUmuSa@ --time-style=long-iso --git --color-scale' # all + extended list
+
+# speciality views
+alias lS='exa -1'			                                                  # one column, just names
+alias lt='exa --tree --level=2'                                         # tree
