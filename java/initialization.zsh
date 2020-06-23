@@ -1,6 +1,6 @@
 #!/bin/sh
 ## SDKMAN
-add_lazy init_sdk sdk java gradle
+add_lazy init_sdk sdk java gradle gradlew
 
 init_sdk() {
     export SDKMAN_DIR="$HOME/.sdkman"

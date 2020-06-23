@@ -4,6 +4,7 @@ alias duf="du -sh * | sort -hr"
 alias less="less -r"
 
 alias cat="ccat"
+alias dog="cat"
 alias cpwd="pwd | pbcopy"
 
 alias croot='cd "$(git rev-parse --show-toplevel)"'
@@ -31,9 +32,8 @@ fi
 ## EXA aliases
 # general use
 alias ls='exa'                                                         # ls
-alias l='exa -lbF --git'                                               # list, size, type, git
-alias ll='exa -lbGF --git'                                             # long list
-alias llm='exa -lbGF --git --sort=modified'                            # long list, modified date sort
+alias ll='exa -lbF --git'                                               # list, size, type, git
+alias llm='exa -lbF --git --sort=modified'                            # long list, modified date sort
 alias la='exa -lbhHigUmuSa --time-style=long-iso --git --color-scale'  # all list
 alias lx='exa -lbhHigUmuSa@ --time-style=long-iso --git --color-scale' # all + extended list
 

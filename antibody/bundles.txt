@@ -19,7 +19,8 @@ zpm-zsh/ssh
 zsh-users/zsh-completions
 
 # these should be at last!
-denysdovhan/spaceship-prompt
+mafredri/zsh-async
+sindresorhus/pure
 zdharma/fast-syntax-highlighting
 zsh-users/zsh-history-substring-search
 
