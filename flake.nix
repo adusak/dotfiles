@@ -63,6 +63,8 @@
             brews = [
             ];
             casks = [
+              "dbeaver-community"
+              "element"
               "marta"
               "boop"
               "jetbrains-toolbox"
