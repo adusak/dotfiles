@@ -11,6 +11,7 @@
       # disable fish greeting
       set fish_greeting
       fish_config theme choose catppuccin
+      fish_add_path -p $DOTNET_ROOT $DOTNET_ROOT/tools
       fish_add_path -p ~/.nix-profile/bin /nix/var/nix/profiles/default/bin /run/current-system/sw/bin
       set -a fish_complete_path ~/.nix-profile/share/fish/completions/ ~/.nix-profile/share/fish/vendor_completions.d/
     '';
@@ -36,8 +37,8 @@
       gp = "git push origin HEAD";
       gpa = "git push origin --all";
       gd = "git diff";
-      gc = "git commit -s";
-      gca = "git commit -sa";
+      gc = "git commit";
+      gca = "git commit -a";
       gco = "git checkout";
       gb = "git branch -v";
       ga = "git add";

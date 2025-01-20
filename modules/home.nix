@@ -8,13 +8,13 @@
   programs.nix-index.enable = true;
 
   home.packages = with pkgs; [
-    (
-      with dotnetCorePackages;
-      combinePackages [
-        sdk_8_0
-        sdk_9_0
-      ]
-    )
+    # (
+    #   with dotnetCorePackages;
+    #   combinePackages [
+    #     sdk_8_0
+    #     sdk_9_0
+    #   ]
+    # )
   ];
 
   home.sessionVariables = {
@@ -22,10 +22,11 @@
   };
 
   home.sessionVariables = {
-    LC_ALL = "en_US.UTF-8";
-    LC_CTYPE = "en_US.UTF-8";
-    WORKSPACE = "$HOME/workspace";
-    WORKDIR = "$WORKSPACE/ysoft";
+    LC_ALL      = "en_US.UTF-8";
+    LC_CTYPE    = "en_US.UTF-8";
+    WORKSPACE   = "$HOME/workspace";
+    WORKDIR     = "$WORKSPACE/ysoft";
+    DOTNET_ROOT = "$HOME/.dotnet";
   };
 
   # ensures ~/Developer folder exists.
