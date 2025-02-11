@@ -77,7 +77,28 @@
               "textmate"
               "wireshark"
               "ghostty"
-            ];
+              "visual-studio-code"
+              "numi"
+              "macfuse"
+              "latest"
+              "klogg"
+              "netnewswire"
+              "numi"
+              "orbstack"
+              "powershell"
+              "qbittorrent"
+              "qlmarkdown"
+              "spotify"
+              "syntax-highlight"
+              "telegram"
+              "iina"
+              "wezterm"
+              "vscodium"
+              "xcodes"
+              "element"
+              "zed"
+              "zen-browser"
+              ];
           };
 
           programs.fish.enable = true;
@@ -97,16 +118,17 @@
             intel-one-mono
             fira-code
             nerd-fonts.fira-code
-            noto-fonts
-            nerd-fonts.noto
             nerd-fonts.space-mono
             mononoki
             nerd-fonts.mononoki
             monaspace
-            nerd-fonts.monaspace
             jetbrains-mono
             nerd-fonts.jetbrains-mono
             maple-mono
+            # these are ginormous
+            # noto-fonts
+            # nerd-fonts.noto
+            # nerd-fonts.monaspace
           ];
 
           security.pam.enableSudoTouchIdAuth = true;
@@ -126,6 +148,7 @@
         {
           imports = [
             ./modules/home.nix
+            # ./modules/darwin
             ./modules/shell.nix
             ./modules/editorconfig.nix
             ./modules/git.nix
@@ -142,6 +165,7 @@
       darwinConfigurations.workmac = nix-darwin.lib.darwinSystem {
         modules = [
           configuration
+          ./darwin.nix
           nix-homebrew.darwinModules.nix-homebrew
           {
             nix-homebrew = {
