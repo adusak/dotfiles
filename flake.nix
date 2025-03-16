@@ -36,6 +36,7 @@
           # $ nix-env -qaP | grep wget
           environment.systemPackages = with pkgs; [
             fish
+            neofetch
             vim
             tmux
             nixfmt-rfc-style
@@ -62,6 +63,7 @@
             brews = [
             ];
             casks = [
+              "steam"
               "dbeaver-community"
               "element"
               "marta"
@@ -130,7 +132,7 @@
             # nerd-fonts.monaspace
           ];
 
-          security.pam.enableSudoTouchIdAuth = true;
+          security.pam.services.sudo_local.touchIdAuth = true;
 
           # Set Git commit hash for darwin-version.
           system.configurationRevision = self.rev or self.dirtyRev or null;
