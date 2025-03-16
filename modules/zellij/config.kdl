@@ -261,6 +261,11 @@ keybinds clear-defaults=true {
     }
     normal {
         bind "Super c" { Copy; }
+        bind "Super Alt Left" { GoToPreviousTab; }
+        bind "Super Alt Right" { GoToNextTab; }
+        bind "Super w" { CloseTab; }
+        bind "Super n" { NewTab; }
+        bind "Super t" { NewTab; }
     }
 }
 
@@ -372,7 +377,7 @@ copy_command "pbcopy"
 // Enable automatic copying (and clearing) of selection when releasing mouse
 // Default: true
 //
-copy_on_select true
+// copy_on_select true
 
 // Path to the default editor to use to edit pane scrollbuffer
 // Default: $EDITOR or $VISUAL

@@ -25,6 +25,12 @@ clipboard-read = "allow"
 clipboard-paste-protection = false
 
 keybind = cmd+c=unbind
+keybind = cmd+t=unbind
+keybind = cmd+n=unbind
+keybind = cmd+w=unbind
+keybind = cmd+opt+left=unbind
+keybind = cmd+opt+right=unbind
+
 
 font-family = "Berkeley Mono"
 font-size = 16
