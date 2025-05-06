@@ -32,8 +32,19 @@
           nixpkgs.config.allowUnfree = true;
           # Necessary for using flakes on this system.
           nix.settings.experimental-features = "nix-command flakes";
-          # List packages installed in system profile. To search by name, run:
-          # $ nix-env -qaP | grep wget
+          # This is an example of an overelay that allows chaning the binary that gets installed
+          nixpkgs.overlays = [
+            (final: prev: {
+                aerospace = prev.aerospace.overrideAttrs (oldAttrs: rec {
+                  version = "0.18.5-Beta";
+                  src = prev.fetchzip {
+                    url = "https://github.com/nikitabobko/AeroSpace/releases/download/v${version}/AeroSpace-v${version}.zip";
+                    sha256 = "sha256-rF4emnLNVE1fFlxExliN7clSBocBrPwQOwBqRtX9Q4o";
+                  };
+                });
+            })
+          ];
+
           environment.systemPackages = with pkgs; [
             fish
             neofetch
@@ -46,8 +57,11 @@
             maccy
             neovim
             ripgrep
-            # aerospace
+            aerospace
             jankyborders
+            sketchybar
+            sketchybar-app-font
+            # ladybird
           ];
 
           homebrew = {
@@ -63,6 +77,7 @@
             brews = [
             ];
             casks = [
+              "font-sf-pro"
               "steam"
               "dbeaver-community"
               "element"
@@ -125,7 +140,7 @@
             monaspace
             jetbrains-mono
             nerd-fonts.jetbrains-mono
-            maple-mono
+            # maple-mono
             # these are ginormous
             # noto-fonts
             # nerd-fonts.noto
@@ -155,8 +170,9 @@
             ./modules/git.nix
             ./modules/mise.nix
             ./modules/terminal/ghostty.nix
-            inputs.catppuccin.homeManagerModules.catppuccin
+            inputs.catppuccin.homeModules.catppuccin
             ./modules/catppuccin.nix
+            ./modules/aerospace/aerospace.nix
           ];
         };
     in

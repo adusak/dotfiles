@@ -27,7 +27,7 @@
       d = "docker";
       dp = "podman";
 
-      cat = "bat -A";
+      cat = "bat";
 
       # nix
       nixreload = "darwin-rebuild switch --flake ~/.config/nix-darwin#workmac";
