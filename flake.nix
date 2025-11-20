@@ -13,6 +13,7 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
     catppuccin.url = "github:catppuccin/nix";
+    komorebi-for-mac.url = "git+ssh://git@github.com/KomoCorp/komorebi-for-mac.git";
   };
 
   outputs =
@@ -23,6 +24,7 @@
       home-manager,
       nix-homebrew,
       catppuccin,
+      komorebi-for-mac,
       ...
     }:
     let
@@ -32,18 +34,19 @@
           nixpkgs.config.allowUnfree = true;
           # Necessary for using flakes on this system.
           nix.settings.experimental-features = "nix-command flakes";
+          nixpkgs.overlays = [ komorebi-for-mac.overlays.default ];
           # This is an example of an overelay that allows chaning the binary that gets installed
-          nixpkgs.overlays = [
-            (final: prev: {
-                aerospace = prev.aerospace.overrideAttrs (oldAttrs: rec {
-                  version = "0.18.5-Beta";
-                  src = prev.fetchzip {
-                    url = "https://github.com/nikitabobko/AeroSpace/releases/download/v${version}/AeroSpace-v${version}.zip";
-                    sha256 = "sha256-rF4emnLNVE1fFlxExliN7clSBocBrPwQOwBqRtX9Q4o";
-                  };
-                });
-            })
-          ];
+          # nixpkgs.overlays = [
+          #   (final: prev: {
+          #       aerospace = prev.aerospace.overrideAttrs (oldAttrs: rec {
+          #         version = "0.19.2-Beta";
+          #         src = prev.fetchzip {
+          #           url = "https://github.com/nikitabobko/AeroSpace/releases/download/v${version}/AeroSpace-v${version}.zip";
+          #           sha256 = "sha256-6RyGw84GhGwULzN0ObjsB3nzRu1HYQS/qoCvzVWOYWQ=";
+          #         };
+          #       });
+          #   })
+          # ];
 
           environment.systemPackages = with pkgs; [
             fish
@@ -61,6 +64,10 @@
             jankyborders
             sketchybar
             sketchybar-app-font
+            komorebi-full
+            cmake
+            clang
+            lazyjj
             # ladybird
           ];
 
@@ -91,7 +98,7 @@
               "db-browser-for-sqlite"
               "omnidisksweeper"
               "textmate"
-              "wireshark"
+              "wireshark-app"
               "ghostty"
               "visual-studio-code"
               "numi"
@@ -110,10 +117,10 @@
               "iina"
               "wezterm"
               "vscodium"
-              "xcodes"
+              "xcodes-app"
               "element"
               "zed"
-              "zen-browser"
+              "zen"
               ];
           };
 
@@ -148,7 +155,7 @@
           ];
 
           security.pam.services.sudo_local.touchIdAuth = true;
-
+          system.primaryUser = "melkus";
           # Set Git commit hash for darwin-version.
           system.configurationRevision = self.rev or self.dirtyRev or null;
 

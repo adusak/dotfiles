@@ -30,7 +30,7 @@
       cat = "bat";
 
       # nix
-      nixreload = "darwin-rebuild switch --flake ~/.config/nix-darwin#workmac";
+      nixreload = "sudo darwin-rebuild switch --flake ~/.config/nix-darwin#workmac";
 
       # git
       g = "git";

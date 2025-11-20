@@ -2,7 +2,7 @@
 #
 # https://ghostty.org/docs/config/reference
 #
-theme = catppuccin-mocha
+theme = Catppuccin Mocha
 cursor-click-to-move = true
 
 macos-option-as-alt = true
