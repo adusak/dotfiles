@@ -13,6 +13,7 @@
       fish_config theme choose catppuccin
       fish_add_path -p $DOTNET_ROOT $DOTNET_ROOT/tools
       fish_add_path -p ~/.bin
+      fish_add_path -p ~/.local/bin
       fish_add_path -p ~/.nix-profile/bin /nix/var/nix/profiles/default/bin /run/current-system/sw/bin
       set -a fish_complete_path ~/.nix-profile/share/fish/completions/ ~/.nix-profile/share/fish/vendor_completions.d/
     '';

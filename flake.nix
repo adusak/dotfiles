@@ -13,7 +13,7 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
     catppuccin.url = "github:catppuccin/nix";
-    komorebi-for-mac.url = "git+ssh://git@github.com/KomoCorp/komorebi-for-mac.git";
+    # komorebi-for-mac.url = "git+ssh://git@github.com/KomoCorp/komorebi-for-mac.git";
   };
 
   outputs =
@@ -24,7 +24,7 @@
       home-manager,
       nix-homebrew,
       catppuccin,
-      komorebi-for-mac,
+      # komorebi-for-mac,
       ...
     }:
     let
@@ -34,23 +34,33 @@
           nixpkgs.config.allowUnfree = true;
           # Necessary for using flakes on this system.
           nix.settings.experimental-features = "nix-command flakes";
-          nixpkgs.overlays = [ komorebi-for-mac.overlays.default ];
           # This is an example of an overelay that allows chaning the binary that gets installed
-          # nixpkgs.overlays = [
-          #   (final: prev: {
-          #       aerospace = prev.aerospace.overrideAttrs (oldAttrs: rec {
-          #         version = "0.19.2-Beta";
-          #         src = prev.fetchzip {
-          #           url = "https://github.com/nikitabobko/AeroSpace/releases/download/v${version}/AeroSpace-v${version}.zip";
-          #           sha256 = "sha256-6RyGw84GhGwULzN0ObjsB3nzRu1HYQS/qoCvzVWOYWQ=";
-          #         };
-          #       });
-          #   })
-          # ];
+          nixpkgs.overlays = [
+            # komorebi-for-mac.overlays.default
+            (final: prev: {
+              aerospace = prev.aerospace.overrideAttrs (oldAttrs: rec {
+                version = "0.20.3-Beta";
+                src = prev.fetchzip {
+                  url = "https://github.com/nikitabobko/AeroSpace/releases/download/v${version}/AeroSpace-v${version}.zip";
+                  sha256 = "sha256-wrBcslp1W/lOmudMcW+SREL9LZY+wTwidh6Hot5ShGE=";
+                };
+              });
+            })
+            # Workaround: direnv build fails because its Makefile uses -linkmode=external
+            # but buildGoModule sets CGO_ENABLED=0. Patch the Makefile to remove -linkmode=external.
+            (final: prev: {
+              direnv = prev.direnv.overrideAttrs (oldAttrs: {
+                postPatch = (oldAttrs.postPatch or "") + ''
+                  substituteInPlace GNUmakefile \
+                    --replace-fail '-linkmode=external' ""
+                '';
+              });
+            })
+          ];
 
           environment.systemPackages = with pkgs; [
             fish
-            neofetch
+            fastfetch
             vim
             tmux
             nixfmt-rfc-style
@@ -64,10 +74,11 @@
             jankyborders
             sketchybar
             sketchybar-app-font
-            komorebi-full
+            # komorebi-full
             cmake
             clang
             lazyjj
+            opencode
             # ladybird
           ];
 
@@ -82,6 +93,7 @@
             taps = [
             ];
             brews = [
+              "mole"
             ];
             casks = [
               "font-sf-pro"
@@ -104,6 +116,7 @@
               "numi"
               "macfuse"
               "latest"
+              "logi-options+"
               "klogg"
               "netnewswire"
               "numi"
@@ -121,7 +134,9 @@
               "element"
               "zed"
               "zen"
-              ];
+              "finetune"
+              "duck"
+            ];
           };
 
           programs.fish.enable = true;
