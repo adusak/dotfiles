@@ -31,6 +31,7 @@
       configuration =
         { pkgs, ... }:
         {
+          nix.enable = false;
           nixpkgs.config.allowUnfree = true;
           # Necessary for using flakes on this system.
           nix.settings.experimental-features = "nix-command flakes";
@@ -46,16 +47,7 @@
                 };
               });
             })
-            # Workaround: direnv build fails because its Makefile uses -linkmode=external
-            # but buildGoModule sets CGO_ENABLED=0. Patch the Makefile to remove -linkmode=external.
-            (final: prev: {
-              direnv = prev.direnv.overrideAttrs (oldAttrs: {
-                postPatch = (oldAttrs.postPatch or "") + ''
-                  substituteInPlace GNUmakefile \
-                    --replace-fail '-linkmode=external' ""
-                '';
-              });
-            })
+
           ];
 
           environment.systemPackages = with pkgs; [
@@ -63,12 +55,13 @@
             fastfetch
             vim
             tmux
-            nixfmt-rfc-style
+            nixfmt
             wishlist # ssh sessions manager
             aria2
             xcbeautify
             maccy
             neovim
+            powershell
             ripgrep
             aerospace
             jankyborders
@@ -94,55 +87,52 @@
             ];
             brews = [
               "mole"
+              "duck"
             ];
             casks = [
-              "font-sf-pro"
-              "steam"
-              "dbeaver-community"
-              "element"
-              "marta"
-              "boop"
-              "jetbrains-toolbox"
-              "microsoft-teams"
-              "raycast"
               "anytype"
+              "boop"
               "cyberduck"
               "db-browser-for-sqlite"
-              "omnidisksweeper"
-              "textmate"
-              "wireshark-app"
+              "dbeaver-community"
+              "element"
+              "finetune"
+              "font-sf-pro"
               "ghostty"
-              "visual-studio-code"
-              "numi"
-              "macfuse"
+              "iina"
+              "jetbrains-toolbox"
+              "klogg"
               "latest"
               "logi-options+"
-              "klogg"
+              "macfuse"
+              "marta"
+              "microsoft-teams"
               "netnewswire"
               "numi"
+              "omnidisksweeper"
               "orbstack"
-              "powershell"
               "qbittorrent"
               "qlmarkdown"
+              "raycast"
               "spotify"
+              "steam"
               "syntax-highlight"
               "telegram"
-              "iina"
-              "wezterm"
+              "textmate"
+              "visual-studio-code"
               "vscodium"
+              "wezterm"
+              "wireshark-app"
               "xcodes-app"
-              "element"
               "zed"
               "zen"
-              "finetune"
-              "duck"
             ];
           };
 
           programs.fish.enable = true;
-          users.users.melkus = {
-            name = "melkus";
-            home = "/Users/melkus";
+          users.users."Adam.Melkus" = {
+            name = "Adam.Melkus";
+            home = "/Users/Adam.Melkus";
             shell = pkgs.fish;
           };
 
@@ -170,7 +160,7 @@
           ];
 
           security.pam.services.sudo_local.touchIdAuth = true;
-          system.primaryUser = "melkus";
+          system.primaryUser = "Adam.Melkus";
           # Set Git commit hash for darwin-version.
           system.configurationRevision = self.rev or self.dirtyRev or null;
 
@@ -213,7 +203,7 @@
               # Apple Silicon Only: Also install Homebrew under the default Intel prefix for Rosetta 2
               enableRosetta = true;
               # User owning the Homebrew prefix
-              user = "melkus";
+              user = "Adam.Melkus";
               # Automatically migrate existing Homebrew installations
               autoMigrate = true;
             };
@@ -224,7 +214,7 @@
             home-manager.useUserPackages = true;
             home-manager.backupFileExtension = "hmbak";
             home-manager.verbose = true;
-            home-manager.users.melkus = homeconfig;
+            home-manager.users."Adam.Melkus" = homeconfig;
           }
         ];
       };
