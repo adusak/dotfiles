@@ -72,6 +72,7 @@
             clang
             lazyjj
             opencode
+            cursor-cli
             # ladybird
           ];
 
@@ -90,6 +91,7 @@
               "duck"
             ];
             casks = [
+              "cursor"
               "anytype"
               "boop"
               "cyberduck"
@@ -176,7 +178,6 @@
         {
           imports = [
             ./modules/home.nix
-            # ./modules/darwin
             ./modules/shell.nix
             ./modules/editorconfig.nix
             ./modules/git.nix

@@ -1,11 +1,33 @@
-{ pkgs, ... }:
+{ config, lib, pkgs, ... }:
+let
+  primaryUser = lib.escapeShellArg config.system.primaryUser;
+  # `darwin-rebuild` runs as root since the 2025 activation rework, so any command that
+  # touches the GUI session has to be re-entered into the primary user's launchd
+  # bootstrap context. This matches what nix-darwin's own `userDefaults` phase does
+  # (see modules/system/defaults-write.nix).
+  asPrimaryUser = cmd: ''/bin/launchctl asuser "$primaryUserId" /usr/bin/sudo --user=${primaryUser} -- ${cmd}'';
+in
 {
   system = {
     # activationScripts are executed every time you boot the system or run `nixos-rebuild` / `darwin-rebuild`.
     activationScripts.postActivation.text = ''
-      # activateSettings -u will reload the settings from the database and apply them to the current session,
-      # so we do not need to logout and login again to make the changes take effect.
-      /System/Library/PrivateFrameworks/SystemAdministration.framework/Resources/activateSettings -u
+      primaryUserId=$(/usr/bin/id -u -- ${primaryUser})
+
+      # Flush the user's preferences daemon so the freshly written defaults (above, in the
+      # `userDefaults` phase) are not served from cache when the UI processes restart.
+      ${asPrimaryUser "/usr/bin/killall cfprefsd"} >/dev/null 2>&1 || true
+
+      # activateSettings -u reloads the preferences database into the current GUI session.
+      # It MUST run inside the primary user's launchd context, otherwise it operates on
+      # root's empty session and silently does nothing.
+      ${asPrimaryUser "/System/Library/PrivateFrameworks/SystemAdministration.framework/Resources/activateSettings -u"}
+
+      # Restart UI services so changes to their respective domains take effect without a logout.
+      # SystemUIServer owns the menu bar (clock, menu extras), Dock owns dock + Mission Control,
+      # and Finder owns desktop + finder windows.
+      ${asPrimaryUser "/usr/bin/killall SystemUIServer"} >/dev/null 2>&1 || true
+      ${asPrimaryUser "/usr/bin/killall Dock"} >/dev/null 2>&1 || true
+      ${asPrimaryUser "/usr/bin/killall Finder"} >/dev/null 2>&1 || true
     '';
     defaults = {
       menuExtraClock = {
@@ -49,10 +71,10 @@
       #   AppleShowScrollBars = "Always";
       #   NSWindowResizeTime = 0.1;
         NSAutomaticCapitalizationEnabled = false;
-      #   NSAutomaticDashSubstitutionEnabled = false;
-      #   NSAutomaticPeriodSubstitutionEnabled = false;
-      #   NSAutomaticQuoteSubstitutionEnabled = false;
-      #   NSAutomaticSpellingCorrectionEnabled = false;
+        NSAutomaticDashSubstitutionEnabled = false;
+        NSAutomaticPeriodSubstitutionEnabled = false;
+        NSAutomaticQuoteSubstitutionEnabled = false;
+        NSAutomaticSpellingCorrectionEnabled = false;
       #   AppleInterfaceStyle = "Dark";
       #   NSDocumentSaveNewDocumentsToCloud = false;
         _HIHideMenuBar = true;
@@ -86,16 +108,17 @@
       #   "com.apple.LaunchServices" = {
       #     LSQuarantine = true;
       #   };
-      #   "com.apple.finder" = {
-      #     ShowExternalHardDrivesOnDesktop = false;
-      #     ShowRemovableMediaOnDesktop = false;
-      #     WarnOnEmptyTrash = false;
-      #   };
-      #   "NSGlobalDomain" = {
+        "com.apple.finder" = {
+          ShowExternalHardDrivesOnDesktop = false;
+          ShowRemovableMediaOnDesktop = false;
+          WarnOnEmptyTrash = false;
+        };
+        "NSGlobalDomain" = {
       #     NSNavPanelExpandedStateForSaveMode = true;
       #     NSTableViewDefaultSizeMode = 1;
       #     WebKitDeveloperExtras = true;
-      #   };
+              SLSMenuBarUseBlurredAppearance = true;
+        };
       #   "com.apple.ImageCapture" = {
       #     "disableHotPlug" = true;
       #   };
