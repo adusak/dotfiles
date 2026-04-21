@@ -1,4 +1,13 @@
-{ pkgs, config, ... }:
+{
+  pkgs,
+  config,
+  hostname,
+  allHostnames,
+  ...
+}:
+let
+  hostnameArgs = builtins.concatStringsSep " " allHostnames;
+in
 {
   programs.fish = {
     enable = true;
@@ -16,6 +25,9 @@
       fish_add_path -p ~/.local/bin
       fish_add_path -p ~/.nix-profile/bin /nix/var/nix/profiles/default/bin /run/current-system/sw/bin
       set -a fish_complete_path ~/.nix-profile/share/fish/completions/ ~/.nix-profile/share/fish/vendor_completions.d/
+
+      # nixreload completion: suggest available flake hostnames
+      complete -c nixreload -f -a "${hostnameArgs}" -d "nix-darwin configuration"
     '';
     plugins = [
       {
@@ -23,15 +35,24 @@
         src = pkgs.fishPlugins.autopair-fish.src;
       }
     ];
+    functions = {
+      nixreload = {
+        description = "Rebuild nix-darwin configuration";
+        argumentNames = [ "target" ];
+        body = ''
+          if test -z "$target"
+              set target ${hostname}
+          end
+          sudo darwin-rebuild switch --flake ~/.config/nix-darwin#$target
+        '';
+      };
+    };
     shellAliases = {
       # docker
       d = "docker";
       dp = "podman";
 
       cat = "bat";
-
-      # nix
-      nixreload = "sudo darwin-rebuild switch --flake ~/.config/nix-darwin#workmac";
 
       # git
       g = "git";

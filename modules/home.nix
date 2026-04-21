@@ -1,6 +1,6 @@
-{ pkgs, ... }:
+{ pkgs, username, ... }:
 {
-  home.username = "Adam.Melkus";
+  home.username = username;
   home.stateVersion = "23.11";
 
   # Let Home Manager install and manage itself.
@@ -83,16 +83,15 @@
     '';
   };
 
-
   home.sessionVariables = {
     EDITOR = "code";
   };
 
   home.sessionVariables = {
-    LC_ALL      = "en_US.UTF-8";
-    LC_CTYPE    = "en_US.UTF-8";
-    WORKSPACE   = "$HOME/workspace";
-    WORKDIR     = "$WORKSPACE/ysoft";
+    LC_ALL = "en_US.UTF-8";
+    LC_CTYPE = "en_US.UTF-8";
+    WORKSPACE = "$HOME/workspace";
+    WORKDIR = "$WORKSPACE/ysoft";
     DOTNET_ROOT = "$HOME/.dotnet";
   };
 

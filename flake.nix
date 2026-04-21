@@ -28,8 +28,9 @@
       ...
     }:
     let
+      # Shared system-level configuration (packages, homebrew, fonts, etc.)
       configuration =
-        { pkgs, ... }:
+        { pkgs, username, ... }:
         {
           nix.enable = false;
           nixpkgs.config.allowUnfree = true;
@@ -132,9 +133,9 @@
           };
 
           programs.fish.enable = true;
-          users.users."Adam.Melkus" = {
-            name = "Adam.Melkus";
-            home = "/Users/Adam.Melkus";
+          users.users.${username} = {
+            name = username;
+            home = "/Users/${username}";
             shell = pkgs.fish;
           };
 
@@ -162,7 +163,7 @@
           ];
 
           security.pam.services.sudo_local.touchIdAuth = true;
-          system.primaryUser = "Adam.Melkus";
+          system.primaryUser = username;
           # Set Git commit hash for darwin-version.
           system.configurationRevision = self.rev or self.dirtyRev or null;
 
@@ -173,6 +174,8 @@
           # The platform the configuration will be used on.
           nixpkgs.hostPlatform = "aarch64-darwin";
         };
+
+      # Shared home-manager module set
       homeconfig =
         { pkgs, ... }:
         {
@@ -188,36 +191,55 @@
             ./modules/aerospace/aerospace.nix
           ];
         };
+
+      # All known host configurations — used for fish completion
+      allHostnames = [
+        "workmac"
+        "homemac"
+      ];
+
+      # Helper: build a darwinSystem for a given hostname + username
+      mkDarwinConfig =
+        { hostname, username }:
+        nix-darwin.lib.darwinSystem {
+          specialArgs = { inherit hostname username allHostnames; };
+          modules = [
+            configuration
+            ./darwin.nix
+            nix-homebrew.darwinModules.nix-homebrew
+            {
+              nix-homebrew = {
+                # Install Homebrew under the default prefix
+                enable = true;
+                # Apple Silicon Only: Also install Homebrew under the default Intel prefix for Rosetta 2
+                enableRosetta = true;
+                # User owning the Homebrew prefix
+                user = username;
+                # Automatically migrate existing Homebrew installations
+                autoMigrate = true;
+              };
+            }
+            home-manager.darwinModules.home-manager
+            {
+              home-manager.useGlobalPkgs = true;
+              home-manager.useUserPackages = true;
+              home-manager.backupFileExtension = "hmbak";
+              home-manager.verbose = true;
+              home-manager.extraSpecialArgs = { inherit hostname username allHostnames; };
+              home-manager.users.${username} = homeconfig;
+            }
+          ];
+        };
     in
     {
-      # Build darwin flake using:
-      # $ darwin-rebuild build --flake .#simple
-      darwinConfigurations.workmac = nix-darwin.lib.darwinSystem {
-        modules = [
-          configuration
-          ./darwin.nix
-          nix-homebrew.darwinModules.nix-homebrew
-          {
-            nix-homebrew = {
-              # Install Homebrew under the default prefix
-              enable = true;
-              # Apple Silicon Only: Also install Homebrew under the default Intel prefix for Rosetta 2
-              enableRosetta = true;
-              # User owning the Homebrew prefix
-              user = "Adam.Melkus";
-              # Automatically migrate existing Homebrew installations
-              autoMigrate = true;
-            };
-          }
-          home-manager.darwinModules.home-manager
-          {
-            home-manager.useGlobalPkgs = true;
-            home-manager.useUserPackages = true;
-            home-manager.backupFileExtension = "hmbak";
-            home-manager.verbose = true;
-            home-manager.users."Adam.Melkus" = homeconfig;
-          }
-        ];
+      darwinConfigurations.workmac = mkDarwinConfig {
+        hostname = "workmac";
+        username = "Adam.Melkus";
+      };
+
+      darwinConfigurations.homemac = mkDarwinConfig {
+        hostname = "homemac";
+        username = "adik";
       };
     };
 }
