@@ -1,11 +1,17 @@
-{ config, lib, pkgs, ... }:
+{
+  config,
+  lib,
+  pkgs,
+  ...
+}:
 let
   primaryUser = lib.escapeShellArg config.system.primaryUser;
   # `darwin-rebuild` runs as root since the 2025 activation rework, so any command that
   # touches the GUI session has to be re-entered into the primary user's launchd
   # bootstrap context. This matches what nix-darwin's own `userDefaults` phase does
   # (see modules/system/defaults-write.nix).
-  asPrimaryUser = cmd: ''/bin/launchctl asuser "$primaryUserId" /usr/bin/sudo --user=${primaryUser} -- ${cmd}'';
+  asPrimaryUser =
+    cmd: ''/bin/launchctl asuser "$primaryUserId" /usr/bin/sudo --user=${primaryUser} -- ${cmd}'';
 in
 {
   system = {
@@ -35,6 +41,7 @@ in
         ShowSeconds = true;
       };
       trackpad = {
+        Clicking = true;
         TrackpadThreeFingerDrag = true;
       };
       dock = {
@@ -68,17 +75,17 @@ in
         KeyRepeat = 2;
         ApplePressAndHoldEnabled = false;
         InitialKeyRepeat = 15;
-      #   AppleShowScrollBars = "Always";
-      #   NSWindowResizeTime = 0.1;
+        #   AppleShowScrollBars = "Always";
+        #   NSWindowResizeTime = 0.1;
         NSAutomaticCapitalizationEnabled = false;
         NSAutomaticDashSubstitutionEnabled = false;
         NSAutomaticPeriodSubstitutionEnabled = false;
         NSAutomaticQuoteSubstitutionEnabled = false;
         NSAutomaticSpellingCorrectionEnabled = false;
-      #   AppleInterfaceStyle = "Dark";
-      #   NSDocumentSaveNewDocumentsToCloud = false;
+        #   AppleInterfaceStyle = "Dark";
+        #   NSDocumentSaveNewDocumentsToCloud = false;
         _HIHideMenuBar = true;
-      #   "com.apple.springing.delay" = 0.0;
+        #   "com.apple.springing.delay" = 0.0;
       };
       finder = {
         FXPreferredViewStyle = "Nlsv";
@@ -89,54 +96,54 @@ in
         ShowPathbar = true;
       };
       CustomUserPreferences = {
-      #   "com.apple.NetworkBrowser" = {
-      #     BrowseAllInterfaces = true;
-      #   };
-      #   "com.apple.screensaver" = {
-      #     askForPassword = true;
-      #     askForPasswordDelay = 0;
-      #   };
-      #   "com.apple.trackpad" = {
-      #     scaling = 2;
-      #   };
-      #   "com.apple.mouse" = {
-      #     scaling = 2.5;
-      #   };
-      #   "com.apple.desktopservices" = {
-      #     DSDontWriteNetworkStores = false;
-      #   };
-      #   "com.apple.LaunchServices" = {
-      #     LSQuarantine = true;
-      #   };
+        #   "com.apple.NetworkBrowser" = {
+        #     BrowseAllInterfaces = true;
+        #   };
+        #   "com.apple.screensaver" = {
+        #     askForPassword = true;
+        #     askForPasswordDelay = 0;
+        #   };
+        #   "com.apple.trackpad" = {
+        #     scaling = 2;
+        #   };
+        #   "com.apple.mouse" = {
+        #     scaling = 2.5;
+        #   };
+        #   "com.apple.desktopservices" = {
+        #     DSDontWriteNetworkStores = false;
+        #   };
+        #   "com.apple.LaunchServices" = {
+        #     LSQuarantine = true;
+        #   };
         "com.apple.finder" = {
           ShowExternalHardDrivesOnDesktop = false;
           ShowRemovableMediaOnDesktop = false;
           WarnOnEmptyTrash = false;
         };
         "NSGlobalDomain" = {
-      #     NSNavPanelExpandedStateForSaveMode = true;
-      #     NSTableViewDefaultSizeMode = 1;
-      #     WebKitDeveloperExtras = true;
-              SLSMenuBarUseBlurredAppearance = true;
+          #     NSNavPanelExpandedStateForSaveMode = true;
+          #     NSTableViewDefaultSizeMode = 1;
+          #     WebKitDeveloperExtras = true;
+          SLSMenuBarUseBlurredAppearance = true;
         };
-      #   "com.apple.ImageCapture" = {
-      #     "disableHotPlug" = true;
-      #   };
-      #   "com.apple.mail" = {
-      #     DisableReplyAnimations = true;
-      #     DisableSendAnimations = true;
-      #     DisableInlineAttachmentViewing = true;
-      #     AddressesIncludeNameOnPasteboard = true;
-      #     InboxViewerAttributes = {
-      #       DisplayInThreadedMode = "yes";
-      #       SortedDescending = "yes";
-      #       SortOrder = "received-date";
-      #     };
-      #     NSUserKeyEquivalents = {
-      #       Send = "@\U21a9";
-      #       Archive = "@$e";
-      #     };
-      #   };
+        #   "com.apple.ImageCapture" = {
+        #     "disableHotPlug" = true;
+        #   };
+        #   "com.apple.mail" = {
+        #     DisableReplyAnimations = true;
+        #     DisableSendAnimations = true;
+        #     DisableInlineAttachmentViewing = true;
+        #     AddressesIncludeNameOnPasteboard = true;
+        #     InboxViewerAttributes = {
+        #       DisplayInThreadedMode = "yes";
+        #       SortedDescending = "yes";
+        #       SortOrder = "received-date";
+        #     };
+        #     NSUserKeyEquivalents = {
+        #       Send = "@\U21a9";
+        #       Archive = "@$e";
+        #     };
+        #   };
         "com.apple.dock" = {
           size-immutable = true;
         };
