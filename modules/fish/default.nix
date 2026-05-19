@@ -6,6 +6,13 @@
 }:
 let
   hostnameArgs = builtins.concatStringsSep " " allHostnames;
+  rebuildCmd =
+    if pkgs.stdenv.isDarwin then
+      "sudo darwin-rebuild switch --flake ~/.config/nix-darwin#$target"
+    else
+      "sudo nixos-rebuild switch --flake ~/.config/nix-darwin#$target";
+  rebuildDescription =
+    if pkgs.stdenv.isDarwin then "Rebuild nix-darwin configuration" else "Rebuild NixOS configuration";
 in
 {
   programs.fish = {
@@ -39,13 +46,13 @@ in
     ];
     functions = {
       nixreload = {
-        description = "Rebuild nix-darwin configuration";
+        description = rebuildDescription;
         argumentNames = [ "target" ];
         body = ''
           if test -z "$target"
               set target ${hostname}
           end
-          sudo darwin-rebuild switch --flake ~/.config/nix-darwin#$target
+          ${rebuildCmd}
         '';
       };
       "grc.wrap" = {
