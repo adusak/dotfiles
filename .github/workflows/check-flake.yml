@@ -1,0 +1,36 @@
+name: Check Nix Flake
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  check:
+    name: Validate flake
+    runs-on: macos-14 # aarch64-darwin, matches nixpkgs.hostPlatform in flake.nix
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Install Nix
+        uses: DeterminateSystems/nix-installer-action@v14
+
+      - name: Show flake outputs
+        run: nix flake show
+
+      - name: Run flake checks
+        run: nix flake check
+
+      - name: Evaluate workmac configuration
+        run: nix build --dry-run .#darwinConfigurations.workmac.system
+
+      - name: Evaluate homemac configuration
+        run: nix build --dry-run .#darwinConfigurations.homemac.system
+
+      - name: Check Nix formatting
+        run: |
+          find . -name '*.nix' -not -path './.git/*' -print0 \
+            | xargs -0 nix run nixpkgs#nixfmt -- --check
