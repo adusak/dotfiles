@@ -13,6 +13,10 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
     catppuccin.url = "github:catppuccin/nix";
+    nixos-wsl = {
+      url = "github:nix-community/NixOS-WSL/main";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
     # komorebi-for-mac.url = "git+ssh://git@github.com/KomoCorp/komorebi-for-mac.git";
   };
 
@@ -24,6 +28,7 @@
       home-manager,
       nix-homebrew,
       catppuccin,
+      nixos-wsl,
       # komorebi-for-mac,
       ...
     }:
@@ -175,9 +180,10 @@
           nixpkgs.hostPlatform = "aarch64-darwin";
         };
 
-      # Shared home-manager module set
+      # Shared home-manager module set. Darwin-only modules (aerospace,
+      # the ghostty shell-integration) are skipped on Linux.
       homeconfig =
-        { pkgs, ... }:
+        { pkgs, lib, ... }:
         {
           imports = [
             ./modules/home.nix
@@ -185,9 +191,11 @@
             ./modules/editorconfig.nix
             ./modules/git.nix
             ./modules/mise.nix
-            ./modules/terminal/ghostty.nix
             inputs.catppuccin.homeModules.catppuccin
             ./modules/catppuccin.nix
+          ]
+          ++ lib.optionals pkgs.stdenv.isDarwin [
+            ./modules/terminal/ghostty.nix
             ./modules/aerospace/aerospace.nix
           ];
         };
@@ -196,6 +204,7 @@
       allHostnames = [
         "workmac"
         "homemac"
+        "worksurf"
       ];
 
       # Helper: build a darwinSystem for a given hostname + username
@@ -230,6 +239,27 @@
             }
           ];
         };
+
+      # Helper: build a NixOS system targeting WSL for a given hostname + username
+      mkNixosWslConfig =
+        { hostname, username }:
+        nixpkgs.lib.nixosSystem {
+          specialArgs = { inherit hostname username allHostnames inputs; };
+          modules = [
+            { nixpkgs.hostPlatform = "x86_64-linux"; }
+            nixos-wsl.nixosModules.default
+            ./nixos-wsl.nix
+            home-manager.nixosModules.home-manager
+            {
+              home-manager.useGlobalPkgs = true;
+              home-manager.useUserPackages = true;
+              home-manager.backupFileExtension = "hmbak";
+              home-manager.verbose = true;
+              home-manager.extraSpecialArgs = { inherit hostname username allHostnames; };
+              home-manager.users.${username} = homeconfig;
+            }
+          ];
+        };
     in
     {
       darwinConfigurations.workmac = mkDarwinConfig {
@@ -239,6 +269,13 @@
 
       darwinConfigurations.homemac = mkDarwinConfig {
         hostname = "homemac";
+        username = "adik";
+      };
+
+      # NixOS running inside WSL on the Windows work box.
+      # TODO: replace `adik` with the real WSL user once the machine exists.
+      nixosConfigurations.worksurf = mkNixosWslConfig {
+        hostname = "worksurf";
         username = "adik";
       };
     };

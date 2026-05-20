@@ -7,8 +7,8 @@ on:
     branches: [main]
 
 jobs:
-  check:
-    name: Validate flake
+  check-darwin:
+    name: Validate darwin configurations
     runs-on: macos-14 # aarch64-darwin, matches nixpkgs.hostPlatform in flake.nix
 
     steps:
@@ -34,3 +34,17 @@ jobs:
         run: |
           find . -name '*.nix' -not -path './.git/*' -print0 \
             | xargs -0 nix run nixpkgs#nixfmt -- --check
+
+  check-nixos:
+    name: Validate NixOS-WSL configurations
+    runs-on: ubuntu-latest # x86_64-linux, matches the worksurf WSL target
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+
+      - name: Install Nix
+        uses: DeterminateSystems/nix-installer-action@v22
+
+      - name: Evaluate worksurf configuration
+        run: nix build --dry-run .#nixosConfigurations.worksurf.config.system.build.toplevel
