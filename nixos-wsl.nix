@@ -35,8 +35,6 @@
     lazyjj
     opencode
     cursor-cli
-    # Tools that are useful inside WSL specifically.
-    wslu
     git
   ];
 
