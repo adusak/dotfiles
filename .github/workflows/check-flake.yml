@@ -37,10 +37,11 @@ jobs:
 
   check-nixos:
     name: Validate NixOS-WSL configurations
-    # The worksurf target is aarch64-linux (Windows-on-ARM running WSL),
-    # but `nix build --dry-run` only evaluates the derivation graph and can
-    # cross-eval from x86_64-linux without issue, so we stay on ubuntu-latest.
-    runs-on: ubuntu-latest
+    # The worksurf target is aarch64-linux (Windows-on-ARM running WSL).
+    # Some home-manager modules (catppuccin) use import-from-derivation,
+    # which means evaluation actually builds derivations — so the runner
+    # has to natively be aarch64-linux. Cross-eval from x86_64 is not enough.
+    runs-on: ubuntu-24.04-arm
 
     steps:
       - name: Checkout
