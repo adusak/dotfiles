@@ -2,17 +2,18 @@
   pkgs,
   hostname,
   allHostnames,
+  isDarwin,
   ...
 }:
 let
   hostnameArgs = builtins.concatStringsSep " " allHostnames;
   rebuildCmd =
-    if pkgs.stdenv.isDarwin then
+    if isDarwin then
       "sudo darwin-rebuild switch --flake ~/.config/nix-darwin#$target"
     else
       "sudo nixos-rebuild switch --flake ~/.config/nix-darwin#$target";
   rebuildDescription =
-    if pkgs.stdenv.isDarwin then "Rebuild nix-darwin configuration" else "Rebuild NixOS configuration";
+    if isDarwin then "Rebuild nix-darwin configuration" else "Rebuild NixOS configuration";
 in
 {
   programs.fish = {

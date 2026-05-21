@@ -181,9 +181,16 @@
         };
 
       # Shared home-manager module set. Darwin-only modules (aerospace,
-      # the ghostty shell-integration) are skipped on Linux.
+      # the ghostty shell-integration) are skipped on Linux. We gate on the
+      # `isDarwin` specialArg rather than `pkgs.stdenv.isDarwin` because the
+      # latter forces evaluation of `pkgs` while the module system is still
+      # resolving `imports`, which causes infinite recursion.
       homeconfig =
-        { pkgs, lib, ... }:
+        {
+          lib,
+          isDarwin,
+          ...
+        }:
         {
           imports = [
             ./modules/home.nix
@@ -194,7 +201,7 @@
             inputs.catppuccin.homeModules.catppuccin
             ./modules/catppuccin.nix
           ]
-          ++ lib.optionals pkgs.stdenv.isDarwin [
+          ++ lib.optionals isDarwin [
             ./modules/terminal/ghostty.nix
             ./modules/aerospace/aerospace.nix
           ];
@@ -210,8 +217,11 @@
       # Helper: build a darwinSystem for a given hostname + username
       mkDarwinConfig =
         { hostname, username }:
+        let
+          isDarwin = true;
+        in
         nix-darwin.lib.darwinSystem {
-          specialArgs = { inherit hostname username allHostnames; };
+          specialArgs = { inherit hostname username allHostnames isDarwin; };
           modules = [
             configuration
             ./darwin.nix
@@ -234,7 +244,14 @@
               home-manager.useUserPackages = true;
               home-manager.backupFileExtension = "hmbak";
               home-manager.verbose = true;
-              home-manager.extraSpecialArgs = { inherit hostname username allHostnames; };
+              home-manager.extraSpecialArgs = {
+                inherit
+                  hostname
+                  username
+                  allHostnames
+                  isDarwin
+                  ;
+              };
               home-manager.users.${username} = homeconfig;
             }
           ];
@@ -243,8 +260,19 @@
       # Helper: build a NixOS system targeting WSL for a given hostname + username
       mkNixosWslConfig =
         { hostname, username }:
+        let
+          isDarwin = false;
+        in
         nixpkgs.lib.nixosSystem {
-          specialArgs = { inherit hostname username allHostnames inputs; };
+          specialArgs = {
+            inherit
+              hostname
+              username
+              allHostnames
+              isDarwin
+              inputs
+              ;
+          };
           modules = [
             { nixpkgs.hostPlatform = "x86_64-linux"; }
             nixos-wsl.nixosModules.default
@@ -255,7 +283,14 @@
               home-manager.useUserPackages = true;
               home-manager.backupFileExtension = "hmbak";
               home-manager.verbose = true;
-              home-manager.extraSpecialArgs = { inherit hostname username allHostnames; };
+              home-manager.extraSpecialArgs = {
+                inherit
+                  hostname
+                  username
+                  allHostnames
+                  isDarwin
+                  ;
+              };
               home-manager.users.${username} = homeconfig;
             }
           ];

@@ -2,6 +2,7 @@
   pkgs,
   lib,
   username,
+  isDarwin,
   ...
 }:
 {
@@ -37,9 +38,11 @@
     mkdir -p ~/workspace
   '';
 }
-// lib.optionalAttrs pkgs.stdenv.isDarwin {
+// lib.optionalAttrs isDarwin {
   # skhd is a darwin-only home-manager module; it's kept disabled but the
-  # block has to stay out of the option tree on Linux entirely.
+  # block has to stay out of the option tree on Linux entirely. We gate on
+  # the `isDarwin` specialArg rather than `pkgs.stdenv.isDarwin` to avoid
+  # forcing `pkgs` during module resolution.
   services.skhd = {
     enable = false;
     config = ''
