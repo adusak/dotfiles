@@ -9,8 +9,6 @@
     enable = true;
     defaultUser = username;
     startMenuLaunchers = true;
-    # Forward systemd into WSL2 so user services (atuin, etc.) work.
-    nativeSystemd = true;
   };
 
   networking.hostName = hostname;
