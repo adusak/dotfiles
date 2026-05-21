@@ -37,7 +37,10 @@ jobs:
 
   check-nixos:
     name: Validate NixOS-WSL configurations
-    runs-on: ubuntu-latest # x86_64-linux, matches the worksurf WSL target
+    # The worksurf target is aarch64-linux (Windows-on-ARM running WSL),
+    # but `nix build --dry-run` only evaluates the derivation graph and can
+    # cross-eval from x86_64-linux without issue, so we stay on ubuntu-latest.
+    runs-on: ubuntu-latest
 
     steps:
       - name: Checkout

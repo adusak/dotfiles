@@ -274,7 +274,7 @@
               ;
           };
           modules = [
-            { nixpkgs.hostPlatform = "x86_64-linux"; }
+            { nixpkgs.hostPlatform = "aarch64-linux"; }
             nixos-wsl.nixosModules.default
             ./nixos-wsl.nix
             home-manager.nixosModules.home-manager
