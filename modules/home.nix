@@ -1,4 +1,10 @@
-{ pkgs, username, ... }:
+{
+  pkgs,
+  lib,
+  username,
+  isDarwin,
+  ...
+}:
 {
   home.username = username;
   home.stateVersion = "23.11";
@@ -17,6 +23,26 @@
     # )
   ];
 
+  home.sessionVariables = {
+    EDITOR = "code";
+    LC_ALL = "en_US.UTF-8";
+    LC_CTYPE = "en_US.UTF-8";
+    WORKSPACE = "$HOME/workspace";
+    WORKDIR = "$WORKSPACE/ysoft";
+    DOTNET_ROOT = "$HOME/.dotnet";
+  };
+
+  # ensures ~/workspace folder exists.
+  # this folder is later assumed by other activations, specially on darwin.
+  home.activation.workspace = ''
+    mkdir -p ~/workspace
+  '';
+}
+// lib.optionalAttrs isDarwin {
+  # skhd is a darwin-only home-manager module; it's kept disabled but the
+  # block has to stay out of the option tree on Linux entirely. We gate on
+  # the `isDarwin` specialArg rather than `pkgs.stdenv.isDarwin` to avoid
+  # forcing `pkgs` during module resolution.
   services.skhd = {
     enable = false;
     config = ''
@@ -82,22 +108,4 @@
       alt + shift - 4         : komorebic move-to-workspace 3
     '';
   };
-
-  home.sessionVariables = {
-    EDITOR = "code";
-  };
-
-  home.sessionVariables = {
-    LC_ALL = "en_US.UTF-8";
-    LC_CTYPE = "en_US.UTF-8";
-    WORKSPACE = "$HOME/workspace";
-    WORKDIR = "$WORKSPACE/ysoft";
-    DOTNET_ROOT = "$HOME/.dotnet";
-  };
-
-  # ensures ~/Developer folder exists.
-  # this folder is later assumed by other activations, specially on darwin.
-  home.activation.workspace = ''
-    mkdir -p ~/workspace
-  '';
 }

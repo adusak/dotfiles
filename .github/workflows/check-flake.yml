@@ -7,8 +7,8 @@ on:
     branches: [main]
 
 jobs:
-  check:
-    name: Validate flake
+  check-darwin:
+    name: Validate darwin configurations
     runs-on: macos-14 # aarch64-darwin, matches nixpkgs.hostPlatform in flake.nix
 
     steps:
@@ -34,3 +34,21 @@ jobs:
         run: |
           find . -name '*.nix' -not -path './.git/*' -print0 \
             | xargs -0 nix run nixpkgs#nixfmt -- --check
+
+  check-nixos:
+    name: Validate NixOS-WSL configurations
+    # The worksurf target is aarch64-linux (Windows-on-ARM running WSL).
+    # Some home-manager modules (catppuccin) use import-from-derivation,
+    # which means evaluation actually builds derivations — so the runner
+    # has to natively be aarch64-linux. Cross-eval from x86_64 is not enough.
+    runs-on: ubuntu-24.04-arm
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+
+      - name: Install Nix
+        uses: DeterminateSystems/nix-installer-action@v22
+
+      - name: Evaluate worksurf configuration
+        run: nix build --dry-run .#nixosConfigurations.worksurf.config.system.build.toplevel
