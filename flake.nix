@@ -221,7 +221,14 @@
           isDarwin = true;
         in
         nix-darwin.lib.darwinSystem {
-          specialArgs = { inherit hostname username allHostnames isDarwin; };
+          specialArgs = {
+            inherit
+              hostname
+              username
+              allHostnames
+              isDarwin
+              ;
+          };
           modules = [
             configuration
             ./darwin.nix
