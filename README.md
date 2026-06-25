@@ -16,7 +16,7 @@ The flake defines one configuration per machine:
 | ---------- | ---------------------- | ------------- | -------------------------------------------------- |
 | `workmac`  | macOS (aarch64-darwin) | `Adam.Melkus` | `darwinConfigurations.workmac`                     |
 | `homemac`  | macOS (aarch64-darwin) | `adik`        | `darwinConfigurations.homemac`                     |
-| `worksurf` | NixOS-WSL (aarch64)    | `adik`        | `nixosConfigurations.worksurf`                     |
+| `worklaptop` | NixOS-WSL (x86_64)   | `adik`        | `nixosConfigurations.worklaptop`                   |
 
 Pick the entry that matches the machine you are setting up — its name is the
 `#host` flake selector used in every command below.
@@ -69,12 +69,12 @@ sudo nix run nix-darwin/master#darwin-rebuild -- switch --flake ~/.config/nix-da
 This installs nix-darwin, Homebrew (via `nix-homebrew`), and the full
 home-manager environment. Expect the first build to take a while.
 
-**NixOS-WSL** (`worksurf`): start from a clean
+**NixOS-WSL** (`worklaptop`): start from a clean
 [NixOS-WSL](https://github.com/nix-community/NixOS-WSL#installation) instance,
 then:
 
 ```sh
-sudo nixos-rebuild switch --flake ~/.config/nix-darwin#worksurf
+sudo nixos-rebuild switch --flake ~/.config/nix-darwin#worklaptop
 ```
 
 ### 4. Start a new shell

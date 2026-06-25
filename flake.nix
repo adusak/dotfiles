@@ -211,7 +211,7 @@
       allHostnames = [
         "workmac"
         "homemac"
-        "worksurf"
+        "worklaptop"
       ];
 
       # Helper: build a darwinSystem for a given hostname + username
@@ -281,7 +281,7 @@
               ;
           };
           modules = [
-            { nixpkgs.hostPlatform = "aarch64-linux"; }
+            { nixpkgs.hostPlatform = "x86_64-linux"; }
             nixos-wsl.nixosModules.default
             ./nixos-wsl.nix
             home-manager.nixosModules.home-manager
@@ -315,10 +315,9 @@
       };
 
       # NixOS running inside WSL on the Windows work box.
-      # TODO: replace `adik` with the real WSL user once the machine exists.
-      nixosConfigurations.worksurf = mkNixosWslConfig {
-        hostname = "worksurf";
-        username = "adik";
+      nixosConfigurations.worklaptop = mkNixosWslConfig {
+        hostname = "worklaptop";
+        username = "adammelkus";
       };
     };
 }
