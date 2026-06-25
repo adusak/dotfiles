@@ -315,10 +315,9 @@
       };
 
       # NixOS running inside WSL on the Windows work box.
-      # TODO: replace `adik` with the real WSL user once the machine exists.
       nixosConfigurations.worklaptop = mkNixosWslConfig {
         hostname = "worklaptop";
-        username = "adik";
+        username = "adammelkus";
       };
     };
 }
