@@ -14,6 +14,9 @@
   programs.nix-index.enable = true;
 
   home.packages = with pkgs; [
+    tea # gitea cli
+    azure-cli
+    oci-cli
     # (
     #   with dotnetCorePackages;
     #   combinePackages [

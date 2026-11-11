@@ -27,7 +27,7 @@ Pick the entry that matches the machine you are setting up — its name is the
   system/home module wiring.
 - `darwin.nix`, `nixos-wsl.nix` — platform-specific system configuration.
 - `modules/` — home-manager modules (shell, git, editor, terminal, theming,
-  etc.). Darwin-only modules such as `aerospace` are gated behind `isDarwin`.
+  etc.). Darwin-only modules such as `glazewm` are gated behind `isDarwin`.
 - `.github/workflows/` — CI that evaluates every host config and checks
   `nixfmt` formatting.
 

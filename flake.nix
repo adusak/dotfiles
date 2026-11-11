@@ -42,19 +42,6 @@
           # Necessary for using flakes on this system.
           nix.settings.experimental-features = "nix-command flakes";
           # This is an example of an overelay that allows chaning the binary that gets installed
-          nixpkgs.overlays = [
-            # komorebi-for-mac.overlays.default
-            (final: prev: {
-              aerospace = prev.aerospace.overrideAttrs (oldAttrs: rec {
-                version = "0.20.3-Beta";
-                src = prev.fetchzip {
-                  url = "https://github.com/nikitabobko/AeroSpace/releases/download/v${version}/AeroSpace-v${version}.zip";
-                  sha256 = "sha256-wrBcslp1W/lOmudMcW+SREL9LZY+wTwidh6Hot5ShGE=";
-                };
-              });
-            })
-
-          ];
 
           environment.systemPackages = with pkgs; [
             fish
@@ -69,17 +56,13 @@
             neovim
             powershell
             ripgrep
-            aerospace
             jankyborders
-            sketchybar
-            sketchybar-app-font
             # komorebi-full
             cmake
             clang
             lazyjj
-            opencode
-            cursor-cli
-            # ladybird
+            github-copilot-cli
+            claude-code
           ];
 
           homebrew = {
@@ -91,6 +74,7 @@
             };
 
             taps = [
+              "glzr-io/tap"
             ];
             brews = [
               "mole"
@@ -107,6 +91,9 @@
               "finetune"
               "font-sf-pro"
               "ghostty"
+              "glzr-io/tap/glazewm"
+              "glzr-io/tap/zebar"
+              "github-copilot-app"
               "iina"
               "jetbrains-toolbox"
               "klogg"
@@ -134,6 +121,7 @@
               "xcodes-app"
               "zed"
               "zen"
+              "fork"
             ];
           };
 
@@ -180,7 +168,7 @@
           nixpkgs.hostPlatform = "aarch64-darwin";
         };
 
-      # Shared home-manager module set. Darwin-only modules (aerospace,
+      # Shared home-manager module set. Darwin-only modules (glazewm,
       # the ghostty shell-integration) are skipped on Linux. We gate on the
       # `isDarwin` specialArg rather than `pkgs.stdenv.isDarwin` because the
       # latter forces evaluation of `pkgs` while the module system is still
@@ -203,7 +191,7 @@
           ]
           ++ lib.optionals isDarwin [
             ./modules/terminal/ghostty.nix
-            ./modules/aerospace/aerospace.nix
+            ./modules/glazewm/glazewm.nix
           ];
         };
 
