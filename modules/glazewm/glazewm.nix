@@ -208,6 +208,21 @@ let
         ];
       }
 
+      # Authorization prompts (1Password unlock / approve, Touch ID, macOS
+      # password dialogs) float centered on top instead of tiling. Every
+      # 1Password window except the main one (titled "1Password") is a prompt
+      # or Quick Access.
+      {
+        commands = [ "set-floating --centered --shown-on-top" ];
+        match = [
+          {
+            window_process.equals = "1Password";
+            window_title.not_regex = "^1Password$";
+          }
+          (process "^(coreautha|SecurityAgent)$")
+        ];
+      }
+
       (placeOnce "Terminal" [ (process "(?i)^(ghostty|terminal|iterm2|wezterm)$") ])
 
       (placeOnce "Communication" [
